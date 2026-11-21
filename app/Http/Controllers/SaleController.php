@@ -2,64 +2,81 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Customer;
+use App\Models\Product;
 use App\Models\Sale;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\ValidationException;
 
 class SaleController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        //
+        $sales = Sale::with(['product', 'customer', 'staff'])
+            ->latest()
+            ->get();
+
+        return view('sales.index', compact('sales'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
-        //
+        $products = Product::orderBy('name')->get();
+        $customers = Customer::orderBy('full_name')->get();
+
+        return view('sales.create', compact('products', 'customers'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'product_id' => ['required', 'exists:products,id'],
+            'customer_id' => ['nullable', 'exists:customers,id'],
+            'quantity' => ['required', 'integer', 'min:1'],
+        ]);
+
+        $sale = DB::transaction(function () use ($validated) {
+            $product = Product::whereKey($validated['product_id'])
+                ->lockForUpdate()
+                ->firstOrFail();
+
+            if ($validated['quantity'] > $product->stock_quantity) {
+                throw ValidationException::withMessages([
+                    'quantity' => 'Insufficient stock. Only '
+                        . $product->stock_quantity
+                        . ' item(s) are available.',
+                ]);
+            }
+
+            $totalPrice = round(
+                (float) $product->price * $validated['quantity'],
+                2
+            );
+
+            $product->decrement(
+                'stock_quantity',
+                $validated['quantity']
+            );
+
+            return Sale::create([
+                'product_id' => $product->id,
+                'customer_id' => $validated['customer_id'] ?? null,
+                'sold_by' => auth()->id(),
+                'quantity' => $validated['quantity'],
+                'total_price' => $totalPrice,
+            ]);
+        });
+
+        return redirect()
+            ->route('sales.show', $sale)
+            ->with('success', 'Sale recorded successfully.');
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(Sale $sale)
     {
-        //
-    }
+        $sale->load(['product', 'customer', 'staff']);
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Sale $sale)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Sale $sale)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Sale $sale)
-    {
-        //
+        return view('sales.show', compact('sale'));
     }
 }
