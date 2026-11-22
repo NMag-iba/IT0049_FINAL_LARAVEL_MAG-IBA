@@ -12,6 +12,7 @@ class Product extends Model
         'price',
         'stock_quantity',
         'image',
+        'is_archived',
     ];
 
     public function sales()

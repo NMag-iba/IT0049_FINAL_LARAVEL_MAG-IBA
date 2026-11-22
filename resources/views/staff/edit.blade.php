@@ -1,146 +1,175 @@
 <x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl">
-            Edit Staff Account
-        </h2>
-    </x-slot>
 
-    <div class="p-6">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap');
 
-        @if ($errors->any())
-            <div style="color: red; margin-bottom: 15px;">
-                <strong>Please fix the following errors:</strong>
+        .pos-staff {
+            font-family: 'DM Sans', sans-serif;
+        }
+    </style>
 
-                <ul>
-                    @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-            </div>
-        @endif
+    <div class="pos-staff min-h-screen bg-[#FAF4E8] px-6 py-8">
+        <div class="mx-auto max-w-3xl">
 
-        @if (session('success'))
-            <p style="color: green; margin-bottom: 15px;">
-                {{ session('success') }}
-            </p>
-        @endif
-
-        <form action="{{ route('staff.update', $staff) }}"
-              method="POST"
-              enctype="multipart/form-data">
-
-            @csrf
-            @method('PUT')
-
-            <div>
-                <label for="full_name">Full Name</label>
-
-                <input
-                    id="full_name"
-                    type="text"
-                    name="full_name"
-                    value="{{ old('full_name', $staff->full_name) }}"
-                    required
-                >
-
-                @error('full_name')
-                    <p style="color: red;">{{ $message }}</p>
-                @enderror
+            <div class="mb-8">
+                <h1 class="text-4xl font-bold text-[#111111]">
+                    Edit Staff
+                </h1>
             </div>
 
-            <br>
+            <div class="rounded-[28px] bg-white p-8 shadow-sm">
 
-            <div>
-                <label for="email">Email</label>
+                @if ($errors->any())
+                    <div class="mb-6 rounded-2xl bg-[#F3EEE5] p-4 text-red-600">
+                        <p class="font-bold">Please fix the following errors:</p>
 
-                <input
-                    id="email"
-                    type="email"
-                    name="email"
-                    value="{{ old('email', $staff->email) }}"
-                    required
-                >
+                        <ul class="mt-2 list-disc pl-5 text-sm">
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
 
-                @error('email')
-                    <p style="color: red;">{{ $message }}</p>
-                @enderror
+                <form action="{{ route('staff.update', $staff) }}"
+                      method="POST"
+                      enctype="multipart/form-data"
+                      class="space-y-6">
+
+                    @csrf
+                    @method('PUT')
+
+                    <div>
+                        <label for="full_name"
+                               class="mb-2 block text-sm font-semibold text-[#111111]">
+                            Full Name
+                        </label>
+
+                        <input
+                            id="full_name"
+                            type="text"
+                            name="full_name"
+                            value="{{ old('full_name', $staff->full_name) }}"
+                            required
+                            class="w-full rounded-2xl border-[#E6DDCF] bg-[#FAF4E8] px-4 py-3"
+                        >
+
+                        @error('full_name')
+                            <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    <div>
+                        <label for="email"
+                               class="mb-2 block text-sm font-semibold text-[#111111]">
+                            Email
+                        </label>
+
+                        <input
+                            id="email"
+                            type="email"
+                            name="email"
+                            value="{{ old('email', $staff->email) }}"
+                            required
+                            class="w-full rounded-2xl border-[#E6DDCF] bg-[#FAF4E8] px-4 py-3"
+                        >
+
+                        @error('email')
+                            <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
+
+                        <div>
+                            <label for="password"
+                                   class="mb-2 block text-sm font-semibold text-[#111111]">
+                                New Password
+                            </label>
+
+                            <input
+                                id="password"
+                                type="password"
+                                name="password"
+                                autocomplete="new-password"
+                                class="w-full rounded-2xl border-[#E6DDCF] bg-[#FAF4E8] px-4 py-3"
+                            >
+
+                            <p class="mt-2 text-xs text-[#756F68]">
+                                Leave blank to keep the current password.
+                            </p>
+
+                            @error('password')
+                                <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        <div>
+                            <label for="password_confirmation"
+                                   class="mb-2 block text-sm font-semibold text-[#111111]">
+                                Confirm New Password
+                            </label>
+
+                            <input
+                                id="password_confirmation"
+                                type="password"
+                                name="password_confirmation"
+                                autocomplete="new-password"
+                                class="w-full rounded-2xl border-[#E6DDCF] bg-[#FAF4E8] px-4 py-3"
+                            >
+                        </div>
+
+                    </div>
+
+                    <div>
+                        <label for="avatar"
+                               class="mb-2 block text-sm font-semibold text-[#111111]">
+                            Replace Avatar
+                        </label>
+
+                        <input
+                            id="avatar"
+                            type="file"
+                            name="avatar"
+                            accept="image/jpeg,image/png,image/webp"
+                            class="w-full rounded-2xl border border-[#E6DDCF] bg-[#FAF4E8] px-4 py-3"
+                        >
+
+                        @error('avatar')
+                            <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    @if ($staff->avatar)
+                        <div class="rounded-2xl bg-[#F3EEE5] p-4">
+                            <p class="mb-3 text-sm font-semibold text-[#111111]">
+                                Current Avatar
+                            </p>
+
+                            <img
+                                src="{{ asset('storage/' . $staff->avatar) }}"
+                                alt="Current avatar"
+                                class="h-24 w-24 rounded-xl object-cover"
+                            >
+                        </div>
+                    @endif
+
+                    <div class="flex flex-col gap-3 pt-4 sm:flex-row">
+                        <button
+                            type="submit"
+                            class="rounded-full bg-[#111111] px-6 py-3 text-sm font-semibold text-white">
+                            Update Staff
+                        </button>
+
+                        <a href="{{ route('staff.index') }}"
+                           class="rounded-full bg-[#F5DB58] px-6 py-3 text-center text-sm font-semibold text-[#111111]">
+                            Cancel
+                        </a>
+                    </div>
+
+                </form>
             </div>
-
-            <br>
-
-            <div>
-                <label for="password">
-                    New Password
-                    <small>(Leave blank to keep the current password)</small>
-                </label>
-
-                <input
-                    id="password"
-                    type="password"
-                    name="password"
-                    autocomplete="new-password"
-                >
-
-                @error('password')
-                    <p style="color: red;">{{ $message }}</p>
-                @enderror
-            </div>
-
-            <br>
-
-            <div>
-                <label for="password_confirmation">
-                    Confirm New Password
-                </label>
-
-                <input
-                    id="password_confirmation"
-                    type="password"
-                    name="password_confirmation"
-                    autocomplete="new-password"
-                >
-            </div>
-
-            <br>
-
-            <div>
-                <label for="avatar">New Avatar</label>
-
-                <input
-                    id="avatar"
-                    type="file"
-                    name="avatar"
-                    accept="image/jpeg,image/png,image/webp"
-                >
-
-                @error('avatar')
-                    <p style="color: red;">{{ $message }}</p>
-                @enderror
-            </div>
-
-            <br>
-
-            @if ($staff->avatar)
-                <div>
-                    <p>Current Avatar:</p>
-
-                    <img
-                        src="{{ asset('storage/' . $staff->avatar) }}"
-                        alt="Current avatar"
-                        width="100"
-                    >
-                </div>
-            @endif
-
-            <br>
-
-            <button type="submit">
-                Update Staff Account
-            </button>
-
-            <a href="{{ route('staff.index') }}">
-                Cancel
-            </a>
-        </form>
+        </div>
     </div>
+
 </x-app-layout>

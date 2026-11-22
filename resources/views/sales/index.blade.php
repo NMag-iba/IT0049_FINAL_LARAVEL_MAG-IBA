@@ -1,70 +1,96 @@
 <x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl">
-            Sales History
-        </h2>
-    </x-slot>
 
-    <div class="p-6">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap');
 
-        @if (session('success'))
-            <p style="color: green;">
-                {{ session('success') }}
-            </p>
-        @endif
+        .pos-sales {
+            font-family: 'DM Sans', sans-serif;
+        }
+    </style>
 
-        <a href="{{ route('sales.create') }}">
-            Record New Sale
-        </a>
+    <div class="pos-sales min-h-screen bg-[#FAF4E8] px-6 py-8">
+        <div class="mx-auto max-w-7xl">
 
-        <br><br>
+            <div class="mb-8 flex flex-col justify-between gap-5 md:flex-row md:items-end">
+                <div>
+                    <h1 class="text-4xl font-bold text-[#111111]">
+                        Sales History
+                    </h1>
+                </div>
 
-        <table border="1" cellpadding="10">
-            <tr>
-                <th>Product</th>
-                <th>Customer</th>
-                <th>Staff</th>
-                <th>Quantity</th>
-                <th>Total Price</th>
-                <th>Date</th>
-                <th>Action</th>
-            </tr>
+                <a href="{{ route('sales.create') }}"
+                   class="rounded-full bg-[#111111] px-6 py-3 text-center text-sm font-semibold text-white hover:bg-[#333333]">
+                    Record Sale
+                </a>
+            </div>
 
-            @forelse ($sales as $sale)
-                <tr>
-                    <td>{{ $sale->product->name }}</td>
+            @if (session('success'))
+                <div class="mb-6 rounded-2xl bg-[#AFC477] px-5 py-4 font-medium text-[#111111]">
+                    {{ session('success') }}
+                </div>
+            @endif
 
-                    <td>
-                        {{ $sale->customer?->full_name ?? 'Walk-in Customer' }}
-                    </td>
+            <div class="overflow-hidden rounded-[28px] bg-white shadow-sm">
+                <div class="overflow-x-auto">
 
-                    <td>
-                        {{ $sale->staff->full_name ?? $sale->staff->name }}
-                    </td>
+                    <table class="w-full min-w-[1100px] table-fixed text-left">
 
-                    <td>{{ $sale->quantity }}</td>
+                        <thead class="bg-[#A8C0E8] text-sm text-[#111111]">
+                            <tr>
+                                <th class="w-[18%] px-6 py-5 font-bold">Product</th>
+                                <th class="w-[18%] px-6 py-5 font-bold">Customer</th>
+                                <th class="w-[17%] px-6 py-5 font-bold">Staff</th>
+                                <th class="w-[12%] px-6 py-5 font-bold">Quantity</th>
+                                <th class="w-[15%] px-6 py-5 font-bold">Total</th>
+                                <th class="w-[20%] px-6 py-5 font-bold">Date</th>
+                            </tr>
+                        </thead>
 
-                    <td>
-                        ₱{{ number_format($sale->total_price, 2) }}
-                    </td>
+                        <tbody class="divide-y divide-[#EEE7DC]">
 
-                    <td>
-                        {{ $sale->created_at->format('M d, Y h:i A') }}
-                    </td>
+                            @forelse ($sales as $sale)
+                                <tr class="hover:bg-[#FAF4E8]">
 
-                    <td>
-                        <a href="{{ route('sales.show', $sale) }}">
-                            View
-                        </a>
-                    </td>
-                </tr>
-            @empty
-                <tr>
-                    <td colspan="7">
-                        No sales recorded yet.
-                    </td>
-                </tr>
-            @endforelse
-        </table>
+                                    <td class="px-6 py-6 font-bold text-[#111111]">
+                                        {{ $sale->product->name }}
+                                    </td>
+
+                                    <td class="px-6 py-6 text-sm text-[#756F68]">
+                                        {{ $sale->customer?->full_name ?? 'Walk-in Customer' }}
+                                    </td>
+
+                                    <td class="px-6 py-6 text-sm text-[#756F68]">
+                                        {{ $sale->staff->full_name ?? $sale->staff->name }}
+                                    </td>
+
+                                    <td class="px-6 py-6 text-sm text-[#756F68]">
+                                        {{ $sale->quantity }}
+                                    </td>
+
+                                    <td class="px-6 py-6 font-bold text-[#111111]">
+                                        ₱{{ number_format($sale->total_price, 2) }}
+                                    </td>
+
+                                    <td class="px-6 py-6 text-sm text-[#756F68]">
+                                        {{ $sale->created_at->format('M d, Y h:i A') }}
+                                    </td>
+
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="6" class="px-6 py-12 text-center text-[#756F68]">
+                                        No sales recorded yet.
+                                    </td>
+                                </tr>
+                            @endforelse
+
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+
+        </div>
     </div>
+
 </x-app-layout>

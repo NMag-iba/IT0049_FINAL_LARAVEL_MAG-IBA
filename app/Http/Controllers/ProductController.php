@@ -10,7 +10,9 @@ class ProductController extends Controller
 {
     public function index()
     {
-        $products = Product::latest()->get();
+        $products = Product::where('is_archived', false)
+            ->latest()
+            ->get();
 
         return view('products.index', compact('products'));
     }
@@ -78,14 +80,12 @@ class ProductController extends Controller
 
     public function destroy(Product $product)
     {
-        if ($product->image) {
-            Storage::disk('public')->delete($product->image);
-        }
-
-        $product->delete();
+        $product->update([
+            'is_archived' => true,
+        ]);
 
         return redirect()
             ->route('products.index')
-            ->with('success', 'Product deleted successfully.');
+            ->with('success', 'Product archived successfully.');
     }
 }

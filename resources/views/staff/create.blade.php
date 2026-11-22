@@ -1,39 +1,158 @@
 <x-app-layout>
-    <x-slot name="header">
-        <h2>Add Staff Account</h2>
-    </x-slot>
 
-    <div class="p-6">
-        <form action="{{ route('staff.store') }}"
-              method="POST"
-              enctype="multipart/form-data">
-            @csrf
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap');
 
-            <input type="text"
-                   name="full_name"
-                   placeholder="Full name"
-                   value="{{ old('full_name') }}">
-            @error('full_name') <p>{{ $message }}</p> @enderror
+        .pos-staff {
+            font-family: 'DM Sans', sans-serif;
+        }
+    </style>
 
-            <input type="email"
-                   name="email"
-                   placeholder="Email"
-                   value="{{ old('email') }}">
-            @error('email') <p>{{ $message }}</p> @enderror
+    <div class="pos-staff min-h-screen bg-[#FAF4E8] px-6 py-8">
+        <div class="mx-auto max-w-3xl">
 
-            <input type="password"
-                   name="password"
-                   placeholder="Password">
-            @error('password') <p>{{ $message }}</p> @enderror
+            <div class="mb-8">
+                <h1 class="text-4xl font-bold text-[#111111]">
+                    Add Staff
+                </h1>
+            </div>
 
-            <input type="password"
-                   name="password_confirmation"
-                   placeholder="Confirm password">
+            <div class="rounded-[28px] bg-white p-8 shadow-sm">
 
-            <input type="file" name="avatar">
-            @error('avatar') <p>{{ $message }}</p> @enderror
+                @if ($errors->any())
+                    <div class="mb-6 rounded-2xl bg-[#F3EEE5] p-4 text-red-600">
+                        <p class="font-bold">Please fix the following errors:</p>
 
-            <button type="submit">Create Staff Account</button>
-        </form>
+                        <ul class="mt-2 list-disc pl-5 text-sm">
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
+
+                <form action="{{ route('staff.store') }}"
+                      method="POST"
+                      enctype="multipart/form-data"
+                      class="space-y-6">
+
+                    @csrf
+
+                    <div>
+                        <label for="full_name"
+                               class="mb-2 block text-sm font-semibold text-[#111111]">
+                            Full Name
+                        </label>
+
+                        <input
+                            id="full_name"
+                            type="text"
+                            name="full_name"
+                            value="{{ old('full_name') }}"
+                            required
+                            class="w-full rounded-2xl border-[#E6DDCF] bg-[#FAF4E8] px-4 py-3"
+                        >
+
+                        @error('full_name')
+                            <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    <div>
+                        <label for="email"
+                               class="mb-2 block text-sm font-semibold text-[#111111]">
+                            Email
+                        </label>
+
+                        <input
+                            id="email"
+                            type="email"
+                            name="email"
+                            value="{{ old('email') }}"
+                            required
+                            class="w-full rounded-2xl border-[#E6DDCF] bg-[#FAF4E8] px-4 py-3"
+                        >
+
+                        @error('email')
+                            <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
+
+                        <div>
+                            <label for="password"
+                                   class="mb-2 block text-sm font-semibold text-[#111111]">
+                                Password
+                            </label>
+
+                            <input
+                                id="password"
+                                type="password"
+                                name="password"
+                                autocomplete="new-password"
+                                required
+                                class="w-full rounded-2xl border-[#E6DDCF] bg-[#FAF4E8] px-4 py-3"
+                            >
+
+                            @error('password')
+                                <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        <div>
+                            <label for="password_confirmation"
+                                   class="mb-2 block text-sm font-semibold text-[#111111]">
+                                Confirm Password
+                            </label>
+
+                            <input
+                                id="password_confirmation"
+                                type="password"
+                                name="password_confirmation"
+                                autocomplete="new-password"
+                                required
+                                class="w-full rounded-2xl border-[#E6DDCF] bg-[#FAF4E8] px-4 py-3"
+                            >
+                        </div>
+
+                    </div>
+
+                    <div>
+                        <label for="avatar"
+                               class="mb-2 block text-sm font-semibold text-[#111111]">
+                            Avatar
+                        </label>
+
+                        <input
+                            id="avatar"
+                            type="file"
+                            name="avatar"
+                            accept="image/jpeg,image/png,image/webp"
+                            class="w-full rounded-2xl border border-[#E6DDCF] bg-[#FAF4E8] px-4 py-3"
+                        >
+
+                        @error('avatar')
+                            <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    <div class="flex flex-col gap-3 pt-4 sm:flex-row">
+                        <button
+                            type="submit"
+                            class="rounded-full bg-[#111111] px-6 py-3 text-sm font-semibold text-white">
+                            Create Staff
+                        </button>
+
+                        <a href="{{ route('staff.index') }}"
+                           class="rounded-full bg-[#F5DB58] px-6 py-3 text-center text-sm font-semibold text-[#111111]">
+                            Cancel
+                        </a>
+                    </div>
+
+                </form>
+            </div>
+        </div>
     </div>
+
 </x-app-layout>
